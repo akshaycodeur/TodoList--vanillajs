@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>A Simple ToDo list by Ash</title>
+  </head>
+  <body>
+    <section class="bg-zinc-800 h-screen py-10">
+      <div class="max-w-2xl mx-auto">
+        <h1
+          class="text-center text-yellow-400 text-5xl uppercase font-bold mb-10"
+        >
+          Todo list
+        </h1>
+        <h2 class="text-zinc-100 text-xl text-center font-thin my-5">
+          Please enter your task in the input below:
+        </h2>
+        <div class="inputForm">
+          <form action="">
+            <div class="flex-row sm:flex items-center mb-4">
+              <input
+                type="text"
+                class="w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-blue-500 focus:ring-1"
+                placeholder="What is on your mind?"
+              />
+              <button
+                type="submit"
+                class="mt-3 sm:mt-0 ml-0 sm:ml-2 px-4 py-2 rounded bg-blue-600 text-white font-bold hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 w-full sm:w-1/5"
+              >
+                Add Task
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="taskList">
+          <ul class="list-none p-0">
+            <li
+              class="flex mb-2 border-b border-b-zinc-200 pb-2 hover:bg-zinc-700 px-5"
+            >
+              <span class="text-white flex-1">Buy groceries</span>
+              <span class="ml-auto flex items-center">
+                <svg
+                  class="h-5 w-5 fill-current text-white"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M14.76 3.34l-7.44 7.44l-3.94-3.94L2.3 8.18l5.5 5.5l8.18-8.18z"
+                  ></path>
+                </svg>
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
