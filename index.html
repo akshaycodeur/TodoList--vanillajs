@@ -17,14 +17,15 @@
         <h2 class="text-zinc-100 text-xl text-center font-thin my-5">
           Please enter your task in the input below:
         </h2>
-        <div class="inputForm">
-          <form action="">
+        <div class="">
+          <form action="" class="inputForm">
             <div class="flex-row sm:flex items-center mb-4">
               <input
                 type="text"
                 class="w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-blue-500 focus:ring-1 taskInput"
                 placeholder="What is on your mind?"
                 autocapitalize="on"
+                required
               />
 
               <button
@@ -43,43 +44,15 @@
           <ul class="list-none p-0 taskList"></ul>
         </div>
       </div>
-    </section>
-    <script>
-      // User Fills up form and click submit
-      // On submit, input value is sent to a variable say X
-      // A new element 'li' is created and the innerHtml of it will be X
-      // this new element gets appended to the taskList
 
-      let taskInput = document.querySelector('.taskInput');
-      let submitBtn = document.querySelector('.submitBtn');
-      let taskList = document.querySelector('.taskList');
-      let warningText = document.querySelector('.warningText');
-      let taskArray = [];
-      submitBtn.addEventListener('click', () => {
-        event.preventDefault();
-        let taskInputValue = taskInput.value;
-        console.log(taskInputValue);
-
-        if (taskInputValue !== '') {
-          const newTodoItem = document.createElement('li');
-          newTodoItem.classList.add(
-            'flex',
-            'mb-2',
-            'border-b',
-            'border-b-zinc-200',
-            'pb-2',
-            'hover:bg-zinc-700',
-            'px-5',
-            'last:border-none',
-          );
-          newTodoItem.innerHTML = ` <span class="text-white flex-1">${taskInputValue}</span>
-           <div class='actionBtn flex space-x-2'> <span
-              class="ml-auto flex items-center checkedIcon cursor-pointer"
-            >
-              <svg
-                class="h-5 w-5 fill-current text-white"
-                viewBox="0 0 16 16"
-              >
+      <template class="listTemplate">
+        <li
+          class="flex mb-2 border-b border-b-zinc-200 pb-2 hover:bg-zinc-700 px-5 last:border-none"
+        >
+          <span class="text-white flex-1 todoTask"></span>
+          <div class="actionBtn flex space-x-2">
+            <span class="ml-auto flex items-center checkedIcon cursor-pointer">
+              <svg class="h-5 w-5 fill-current text-white" viewBox="0 0 16 16">
                 <path
                   d="M14.76 3.34l-7.44 7.44l-3.94-3.94L2.3 8.18l5.5 5.5l8.18-8.18z"
                 ></path>
@@ -88,40 +61,66 @@
             <span
               class="ml-auto flex items-center checkedIcon cursor-pointer text-white"
             >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-      </svg>
-
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                />
+              </svg>
             </span>
-            </div>`;
-          //Appended New Task to TODO LIST in DOM
-          taskList.appendChild(newTodoItem);
-          taskInput.value = null;
+          </div>
+        </li>
+      </template>
+    </section>
+    <script>
+      let taskInput = document.querySelector('.taskInput');
+      let todoTask = document.querySelector('.todoTask');
+      let taskList = document.querySelector('.taskList');
+      let listTemplate = document.querySelector('.listTemplate');
+      let warningText = document.querySelector('.warningText');
+      let taskArray = [];
+      let id = 0;
+      let inputForm = document.querySelector('form.inputForm');
+      inputForm.onsubmit = (e) => {
+        e.preventDefault();
+        let inputValue = taskInput.value;
+        taskArray.push({
+          id: id++,
+          task: inputValue,
+          status: 'incomplete',
+        });
+        let newItem = listTemplate.content.cloneNode(true);
+        newItem.querySelector('.todoTask').innerText = inputValue;
+        taskList.appendChild(newItem);
+        let TaskArrayJson = JSON.stringify(taskArray);
+        let TaskArrayParsed = JSON.parse(TaskArrayJson);
+        localStorage.setItem('tasklist', TaskArrayJson);
+        taskInput.value = '';
+        inputForm.focus();
+        console.log(taskArray);
+        console.log(inputValue);
+      };
 
-          //Converted the TodoItem to an Object
-          let newTodoText = newTodoItem.textContent.trim();
-          let newTaskObject = { task: newTodoText };
-
-          //Pushed the object to the TaskArray
-          taskArray.push(newTaskObject);
-          console.log(taskArray);
-          //Converted the Array into a JSON object
-          let rawLocal = JSON.stringify(taskArray);
-          console.log(rawLocal);
-
-          //Add the Json Object to Local Storage
-          localStorage.setItem('tasklist', rawLocal);
-
-          console.log(taskArray.length);
-        } else {
-          alert('Filll form up');
-          const warningFunction = () => {
-            warningText.classList.toggle('hidden');
-          };
-          warningFunction();
-          const messageTimeout = setTimeout(warningFunction, 2000);
+      function renderOnLoad() {
+        let storedData = localStorage.getItem('tasklist');
+        if (storedData) {
+          let parsedStoredData = JSON.parse(storedData);
+          parsedStoredData.forEach((task, key) => {
+            let dispatchedItem = listTemplate.content.cloneNode(true);
+            dispatchedItem.querySelector('.todoTask').innerText = task.task;
+            taskList.appendChild(dispatchedItem);
+          });
         }
-      });
+      }
+      renderOnLoad();
     </script>
   </body>
 </html>
